@@ -4,6 +4,7 @@ Code for the course <<pattern recognition>> of UESTC.
 Copyleft <2015,2016,2018>
 hao <at> uestc.edu.cn
 """
+from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelBinarizer #标签二值化
 from sklearn.model_selection import train_test_split   #切割数据,交叉验证法
 from sklearn.datasets import load_digits
@@ -25,6 +26,11 @@ X /= X.max()
 X_train,X_test,y_train,y_test = train_test_split(X,Y)
 print "Number for training: %s" %y_train.shape
 print "Number for testing: %s" %y_test.shape
+
+# 对训练和测试的特征数据进行标准化
+ss = StandardScaler()
+X_train = ss.fit_transform(X_train)
+X_test = ss.transform(X_test)
 
 #标签二值化：将原始标签(十进制)转为新标签(二进制)
 labels_train = LabelBinarizer().fit_transform(y_train)

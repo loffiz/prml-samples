@@ -16,9 +16,14 @@ digits = load_digits()
 #print digits.data.shape
 #print digits.data
 #print digits.target
+X = digits.data
+Y = digits.target
+#输入数据归一化：当数据集数值过大，乘以较小的权重后还是很大的数，代入sigmoid激活函数就趋近于1，不利于学习
+X -= X.min()
+X /= X.max()
 
 # 随机选取75%的数据作为训练样本；其余25%的数据作为测试样本。
-X_train, X_test, y_train, y_test = train_test_split(digits.data, digits.target)
+X_train, X_test, y_train, y_test = train_test_split(X, Y)
 print "Number for training: %s" %y_train.shape
 print "Number for testing: %s" %y_test.shape
 
@@ -28,8 +33,9 @@ X_train = ss.fit_transform(X_train)
 X_test = ss.transform(X_test)
 
 # 建立支持向量机分类器
-lsvc = svm.SVC(kernel='linear')
-#lsvc = svm.SVC(kernel='rbf')
+lsvc = svm.SVC(kernel='rbf', gamma=0.01, decision_function_shape='ovr')
+#lsvc = svm.SVC(kernel='rbf', gamma=20, )
+
 # 训练模型
 import time
 t0 = time.clock()
