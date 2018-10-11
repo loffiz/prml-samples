@@ -16,14 +16,9 @@ digits = load_digits()
 #print digits.data.shape
 #print digits.data
 #print digits.target
-X = digits.data
-Y = digits.target
-#输入数据归一化：当数据集数值过大，乘以较小的权重后还是很大的数，代入sigmoid激活函数就趋近于1，不利于学习
-X -= X.min()
-X /= X.max()
 
 # 随机选取75%的数据作为训练样本；其余25%的数据作为测试样本。
-X_train, X_test, y_train, y_test = train_test_split(X, Y)
+X_train, X_test, y_train, y_test = train_test_split(digits.data, digits.target)
 print "Number for training: %s" %y_train.shape
 print "Number for testing: %s" %y_test.shape
 
@@ -33,30 +28,31 @@ X_train = ss.fit_transform(X_train)
 X_test = ss.transform(X_test)
 
 # 建立支持向量机分类器
-lsvc = svm.SVC(kernel='rbf', gamma=0.01, decision_function_shape='ovr')
-#lsvc = svm.SVC(kernel='rbf', gamma=20, )
-
+clf = svm.SVC(kernel='linear')
+#lsvc = svm.SVC(kernel='rbf')
 # 训练模型
 import time
 t0 = time.clock()
 print('开始训练...')
 
-lsvc.fit(X_train, y_train)
+clf.fit(X_train, y_train)
 
 print '训练结束', (time.clock() - t0), 's'
 
 # 输出模型自带的准确性测评
-print 'Accuracy：', lsvc.score(X_test, y_test)
+score = clf.score(X_test,y_test)
+print('\n[%.4f] : Accuracy of %s.' %(score, str(clf))) 
 
 # 对测试样本的数字类别进行预测
-y_predict = lsvc.predict(X_test)
+y_predict = clf.predict(X_test)
 
 # 输出混淆矩阵
 labels1 = list(set(y_predict))
 conf_mat1 = confusion_matrix(y_test, y_predict, labels=labels1)
-print "混淆矩阵\n", conf_mat1
+print "\n[confusion_matrix]\n", conf_mat1
 
 # 输出classification_report的预测结果分析
+print '\n[classification_report]'
 print classification_report(y_test, y_predict, target_names=digits.target_names.astype(str))
 
 #############################################训练模型保存、载入、使用#######################
