@@ -35,7 +35,6 @@ y_predict = clf.predict(X_test)
 print '\n[classification_report]'
 print classification_report(y_test, y_predict, target_names=digits.target_names.astype(str))
 
-# dot_data = tree.export_graphviz(clf, out_file=None) 
-# graph = pydotplus.graph_from_dot_data(dot_data)  
-
-# graph.write_png("tree.png")	# 生成png文件 
+dot_data = tree.export_graphviz(clf, out_file=None, filled=True, rounded=True, special_characters=True)
+graph = pydotplus.graph_from_dot_data(dot_data)
+graph.write_pdf('dtree.pdf')

@@ -14,9 +14,9 @@ import numpy as np
 import pydotplus
 
 # 随机选取75%的数据作为训练样本；其余25%的数据作为测试样本。
-X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]], dtype=np.float64)
 Xx = np.array([[0.5, 0], [0, 1], [1, 0], [1, 1]])
-Y = np.array([[0], [1], [1], [0]])
+Y = np.array([[0], [1], [1], [0]], dtype=np.float64)
 X_train, X_test, y_train, y_test = (X, Xx, Y, Y)
 
 # 对训练和测试的特征数据进行标准化
@@ -34,6 +34,7 @@ y_predict = clf.predict(X_test)
 print '\n[classification_report]'
 print classification_report(y_test, y_predict, target_names='01')
 
-dot_data = tree.export_graphviz(clf, out_file=None, filled=True,rounded=True, special_characters=True)
+dot_data = tree.export_graphviz(clf, out_file=None, filled=True, \
+	rounded=True, special_characters=True)
 graph = pydotplus.graph_from_dot_data(dot_data)
-graph.write_pdf('xor_tree.pdf')
+graph.write_pdf('xor_dtree.pdf')
