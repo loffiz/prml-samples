@@ -84,12 +84,34 @@ class NeuralNetwork:
 
 if __name__ == "__main__":
 
+    import sys, getopt
+
+    iterations = 10000
+    rate = 0.25
+    
+    try:
+      opts, args = getopt.getopt(sys.argv[1:],"hi:r:",["iterations=","rate="])
+    except getopt.GetoptError:
+      print 'nn_simple.py -i <count> -r <rate>'
+      sys.exit(2)
+
+    for opt, arg in opts:
+      if opt == '-h':
+         print 'nn_simple.py -i <count> -r <rate>'
+         sys.exit()
+      elif opt in ("-i", "--iterations"):
+         iterations = int(arg)
+      elif opt in ("-r", "--rate"):
+         rate = float(arg)
+
+    print iterations, rate
+
     nn = NeuralNetwork([2, 4, 1])
 
     X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
     Y = np.array([[0], [1], [1], [0]])
 
-    nn.fit(X, Y, 10000, lr=0.30)
+    nn.fit(X, Y, iterations, rate)
     print "W1: \n", nn.W1
     print "W2: \n", nn.W2
 

@@ -25,6 +25,7 @@ print 'Accuracy：', lsvc.score(X_test, y_test)
 
 # 对测试样本的数字类别进行预测
 y_predict = lsvc.predict(X_test)
+print y_predict
 
 # 输出classification_report的预测结果分析
 print classification_report(y_test, y_predict, target_names="01")

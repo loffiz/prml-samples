@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding:utf-8 -*-
 """
 Code for the course <<pattern recognition>> of UESTC.
 Copyleft <2015,2016,2018>
@@ -23,19 +23,18 @@ ss = StandardScaler()
 X_train = ss.fit_transform(X_train)
 X_test = ss.transform(X_test)
 
-# 决策树模型
-from sklearn import tree
-clf = tree.DecisionTreeClassifier(criterion="gini")
-
-# 模型训练
+from sklearn.ensemble import RandomForestClassifier
+clf = RandomForestClassifier(n_estimators=10)
 clf.fit(X_train, y_train)
 
-# 预测性能分析
-score = clf.score(X_test, y_test)
+score = clf.score(X_test,y_test)
 print('\n[%.4f] : Accuracy of %s.' %(score, str(clf))) 
 
 y_predict = clf.predict(X_test)
 print '\n[classification_report]'
 print classification_report(y_test, y_predict, target_names=digits.target_names.astype(str))
 
-# Ends here.
+# dot_data = tree.export_graphviz(clf, out_file=None) 
+# graph = pydotplus.graph_from_dot_data(dot_data)  
+
+# graph.write_png("tree.png")	# 生成png文件 
