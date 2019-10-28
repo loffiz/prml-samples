@@ -7,6 +7,7 @@ hao <at> uestc.edu.cn
 from sklearn.preprocessing import LabelBinarizer #标签二值化
 from sklearn.model_selection import train_test_split   #切割数据,交叉验证法
 from sklearn.datasets import load_digits
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix, classification_report
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,13 +19,19 @@ digits = load_digits()
 X = digits.data
 Y = digits.target
 #输入数据归一化：当数据集数值过大，乘以较小的权重后还是很大的数，代入sigmoid激活函数就趋近于1，不利于学习
-X -= X.min()
-X /= X.max()
+#X -= X.min()
+#X /= X.max()
 
 #sklearn切分数据
 X_train,X_test,y_train,y_test = train_test_split(X,Y)
 print "Number for training: %s" %y_train.shape
 print "Number for testing: %s" %y_test.shape
+
+# 对训练和测试的特征数据进行标准化
+ss = StandardScaler()
+X_train = ss.fit_transform(X_train)
+X_test = ss.transform(X_test)
+
 
 #标签二值化：将原始标签(十进制)转为新标签(二进制)
 labels_train = LabelBinarizer().fit_transform(y_train)
