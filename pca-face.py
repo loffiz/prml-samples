@@ -44,19 +44,19 @@ from sklearn.svm import SVC
 
 # #############################################################################
 # Download the data, if not already on disk and load it as numpy arrays
-lfw_people = fetch_lfw_people(min_faces_per_person=70, resize=0.4)
+faces = fetch_lfw_people(min_faces_per_person=70, resize=0.4)
 
 # introspect the images arrays to find the shapes (for plotting)
-n_samples, h, w = lfw_people.images.shape
+n_samples, h, w = faces.images.shape
 
 # for machine learning we use the 2 data directly (as relative pixel
 # positions info is ignored by this model)
-X = lfw_people.data
+X = faces.data
 n_features = X.shape[1]
 
 # the label to predict is the id of the person
-y = lfw_people.target
-target_names = lfw_people.target_names
+y = faces.target
+target_names = faces.target_names
 n_classes = target_names.shape[0]
 
 print("Total dataset size:")
@@ -87,6 +87,20 @@ pca = PCA(n_components=n_components, whiten=True).fit(X_train)
 print("Top %d components extracted in %0.3fs" % (pca.components_.shape[0], time() - t0))
 
 eigenfaces = pca.components_.reshape((pca.components_.shape[0], h, w))
+
+# calculate the maximum of the dot product of every two eigen faces.
+i = 0
+e = 0
+while i < eigenfaces.shape[0] - 1:
+  j = i + 1
+  while j <= eigenfaces.shape[0] - 1:
+    ee = eigenfaces[i].reshape((-1,1)).T.dot(eigenfaces[j].reshape((-1,1)))
+    if ee > e:
+      e = ee
+    j +=1
+  i += 1
+
+print(e)
 
 print("Projecting the input data on the eigenfaces orthonormal basis")
 t0 = time()
@@ -128,7 +142,7 @@ print(confusion_matrix(y_test, y_pred, labels=range(n_classes)))
 # #############################################################################
 # Qualitative evaluation of the predictions using matplotlib
 
-def plot_gallery(images, titles, h, w, n_row=3, n_col=4):
+def plot_gallery(images, titles, h, w, n_row=3, n_col=8):
     """Helper function to plot a gallery of portraits"""
     plt.figure(figsize=(1.8 * n_col, 2.4 * n_row))
     plt.subplots_adjust(bottom=0, left=.01, right=.99, top=.90, hspace=.35)
@@ -156,5 +170,10 @@ plot_gallery(X_test, prediction_titles, h, w)
 
 eigenface_titles = ["eigenface %d(%d)" % (i, n_components) for i in range(eigenfaces.shape[0])]
 plot_gallery(eigenfaces, eigenface_titles, h, w)
+
+# plot the ``mean face'' image
+fig = plt.figure()
+plt.imshow(pca.mean_.reshape(h, w), cmap=plt.cm.bone)
+plt.title('The mean face')
 
 plt.show()
